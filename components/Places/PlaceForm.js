@@ -1,14 +1,32 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { StyleSheet, View, Text, ScrollView, TextInput } from "react-native";
-
+import { Place } from '../../models/place';
 import { Colors } from "../../constants/colors";
+import RButton from "../../UI/RButton";
 import ImagePicker from "./ImagePicker";
 import LocationPicker from "./LocationPicker";
-function PlaceForm() {
+
+
+function PlaceForm({ onCreatePlace }) {
     const [enteredTitle, setEnteredTitle] = useState('');
+    const [selectedImage, setSelectedImage] = useState();
+    const [pickedLocation, setPickedLocation] = useState();
+
     function changeTitleHandler(enteredText) {
         setEnteredTitle(enteredText);
 
+    }
+    function takeImageHandler(imageUri) {
+        setSelectedImage(imageUri);
+
+    }
+    const pickedLocationHandler = useCallback((location) => {
+        setPickedLocation(location);
+    }, []);
+    
+    function savePlaceHandler() {
+        const placeData = new Place(enteredTitle, selectedImage, pickedLocation);
+        onCreatePlace(placeData);
     }
     return (
         <ScrollView style={styles.form}>
@@ -16,8 +34,9 @@ function PlaceForm() {
                 <Text style={styles.label}>Title</Text>
                 <TextInput onChangeText={changeTitleHandler} value={enteredTitle} style={styles.input} />
             </View>
-            <ImagePicker />
-            <LocationPicker/>
+            <ImagePicker onTakeImage={takeImageHandler} />
+            <LocationPicker onPickLocation={pickedLocationHandler} />
+            <RButton onPress={savePlaceHandler}>Add Place</RButton>
         </ScrollView>
     );
 }
@@ -42,8 +61,8 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         fontSize: 18,
         backgroundColor: Colors.primary100,
-        borderRadius:6,
-        color:Colors.gray700
+        borderRadius: 6,
+        color: Colors.gray700
 
     }
 })

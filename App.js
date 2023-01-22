@@ -6,7 +6,7 @@ import AddPlace from './screens/AddPlace';
 import AllPlaces from './screens/AllPlaces';
 import IconButton from "./UI/IconButton";
 import {Colors} from "./constants/colors";
-
+import Map from "./screens/Map";
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -41,6 +41,7 @@ export default function App() {
               headerTitleAlign: "center"
             }}
           />
+          <Stack.Screen name="Map" component={Map}/>
         </Stack.Navigator>
       </NavigationContainer>
     </>
