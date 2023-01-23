@@ -1,14 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
+import Map from "./screens/Map";
+import IconButton from "./UI/IconButton";
+import AddPlace from './screens/AddPlace';
+import AppLoading from 'expo-app-loading';
+import AllPlaces from './screens/AllPlaces';
+
+import { init } from './util/database';
 import { StyleSheet } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { Colors } from "./constants/colors";
+import { useEffect, useState } from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AddPlace from './screens/AddPlace';
-import AllPlaces from './screens/AllPlaces';
-import IconButton from "./UI/IconButton";
-import {Colors} from "./constants/colors";
-import Map from "./screens/Map";
+import PlaceDetails from "./screens/PlaceDetails";
+
+
 const Stack = createNativeStackNavigator();
 export default function App() {
+  const [dbInitialized, setDbInitialized] = useState(false);
+
+  useEffect(() => {
+    init().then(() => {
+      setDbInitialized(true);
+    }).catch(err => { console.log(err) });
+  }, []);
+
+  if (!dbInitialized) {
+    return <AppLoading />;
+  }
   return (
     <>
       <StatusBar style='dark' />
@@ -41,7 +59,12 @@ export default function App() {
               headerTitleAlign: "center"
             }}
           />
-          <Stack.Screen name="Map" component={Map}/>
+          <Stack.Screen name="Map" component={Map} />
+          <Stack.Screen name='PlaceDetails' component={PlaceDetails} 
+          options={{
+            title:'Loading Place...'
+          }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>
